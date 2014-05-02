@@ -11,7 +11,7 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 
-@WebService
+@WebService(targetNamespace = "http://caelum.com.br/estoquews/v1")
 @Stateless
 public class EstoqueWS {
 
@@ -28,8 +28,14 @@ public class EstoqueWS {
 	
 	@WebMethod
 	@WebResult(name = "ItemEstoque")
-	public List<ItemEstoque> getQuantidade(@WebParam(name="codigos") List<String> codigos) {
+	public List<ItemEstoque> getQuantidade(
+			@WebParam(name="codigos") List<String> codigos, 
+			@WebParam(name="token", header=true) String token) throws AutorizacaoException {
 		List<ItemEstoque> itens = new ArrayList<>();
+		
+		if (token == null || !token.equals("TOKEN123")) {
+			throw new AutorizacaoException("Nao autorizado");
+		}
 		
 		if (codigos == null || codigos.isEmpty()) {
 			return itens;
